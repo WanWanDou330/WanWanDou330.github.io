@@ -1,23 +1,258 @@
 <html>
 
 <head>
-	<meta charset="utf-8">
-	<title>計算一下寵物一餐吃多少吧? 不要? 真無情!</title>
+    <meta charset="utf-8">
+    <title>計算一下寵物一餐吃多少吧? 不要? 真無情!</title>
+
+    <style type="text/css">
+        .smallspace
+        {
+            height: 2px;
+            margin-bottom: 10px;
+        }
+
+        .space
+        {
+            height: 800px;
+        }
+        .author
+        {
+            font-family: fantasy;
+            font-size: 22px;
+        }
+        .discript
+        {
+            font-family: fantasy;
+            font-size: 34px;
+        }
+        .answer
+        {
+            font-family: fantasy;
+            font-size: 32px;
+        }
+        .txt_inlist
+        {
+            font-family: fantasy;
+            font-size: 26px;
+        }
+
+        .middlecontent
+        {
+            margin-left: 40%;
+        }
+        .white
+        {
+            color: white;
+        }
+        .sendBtn
+        {
+
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 30px;
+            margin-top: 30px;
+
+        }
+
+
+    </style>
+
 </head>
 
 <body>
-	<form>
-		<p class="discript">選擇寵物類別</p>
-		<select id="pets-list"></select>
-		<p class="discript">寵物體重(可以輸入到小數點後12位)</p>
-		<input type="text" name="pets_weight"/>
-	</form>
 
-	<div class="author">
-		作者是一個熱愛寵物的人,目前正在加入其他功能,像是如何知道寵物在想什麼
-		如果你想加入這個團隊,或是不知道晚餐吃什麼,歡迎寄信聯絡我們
-		email: mrbean20200330@gmail.com
-	</div>
+    <div class="smallspace"></div>
+
+    <form id="form" class="middlecontent">
+        <p class="discript">1. 選擇寵物類別</p>
+        <div class="white">HaHa</div>
+        <select id="pets-list" class="txt_inlist"></select>
+        <div class="white">我是空白</div>
+
+        <p class="discript">2. 寵物生日</p>
+        <div class="white">我是空白</div>
+        <select id="years-list" class="txt_inlist"></select>年
+        <select id="months-list" class="txt_inlist"></select>月
+        <select id="days-list" class="txt_inlist"></select>日
+        <div class="white">我是空白</div>
+
+        <p class="discript">3. 你家的寵物目前...</p>
+        <div class="white">我是空白</div>
+        <select id="pets-status" class="txt_inlist"></select>
+        <div class="white">我是空白</div>
+
+        <p class="discript">4. 有無結渣</p>
+        <div class="white">我是空白</div>
+        <input type="checkbox" name="nobaby" style="width: 28px; height: 28px;" /> (有的話,左邊打勾)
+        <div class="white">我是空白</div>
+
+        <p class="discript">5. 女性動物需要填一下這裡</p>
+        <div class="white">我是空白</div>
+        <select id="female-list" class="txt_inlist"></select>
+        <div class="white">我是空白</div>
+
+        <p class="discript">6. 寵物體重(可以輸入到小數點後12位)</p>
+        <div class="white">(千萬不能輸入到小數點後16位)</div>
+        <input class="txt_inlist" type="text" name="pets_weight"/>
+        <div class="white">我是空白</div>
+        <input onclick='clickSubmitBtn();' type='button' class="sendBtn" name="btn" value="計算" style="cursor: pointer;">
+    </form>
+
+    <div style="margin-left: 35%">
+        <div class="answer"></div>
+
+        <div class="space"></div>
+
+        <div class="author">
+            作者是一個熱愛寵物的人
+        </div>
+        <div class="author">
+            目前正在加入其他功能,像是如何知道寵物在想什麼,敬請期待吧!
+        </div>
+        <div class="author">
+            如果你想加入這個團隊,或是不知道晚餐吃什麼,歡迎寄信聯絡我們
+        </div>
+
+        <div style="font-size:30px">
+        email: mrbean20200330@gmail.com
+        </div>
+    </div>
+
+
+    <script type="text/javascript">
+
+        var base_table =
+        {
+            "0.5":42, 
+            "0.7":54,
+            "1":70,
+            "1.5":95,
+            "2":118,
+            "2.5":139,
+            "3":160,
+            "4":198,
+            "5":234,
+            "6":268,
+            "7":301,
+            "8":333,
+            "9":363,
+            "10":394,
+            "11":423,
+            "12":451,
+            "13":479,
+            "14":507,
+            "15":534,
+            "16":560,
+            "17":586,
+            "18":612,
+            "19":637,
+            "20":662,
+            "21":687,
+            "22":711,
+            "23":735,
+            "24":759,
+            "25":783,
+            "26":806,
+            "27":829,
+            "28":852,
+            "29":875,
+            "30":897,
+            "31":920,
+            "32":942,
+            "33":964,
+            "34":986,
+            "35":1004,
+            "36":1028,
+            "37":1050,
+            "38":1071,
+            "39":1092,
+            "40":1113,
+            "45":1216,
+            "50":1316,
+            "55":1414,
+            "60":1509
+        }
+
+
+        // 寵物選單
+        var pets = ['狗', '貓', '馬', '天竺鼠', '烏龜', '牛', '雞', '豬', '羊', '蛇'];
+        var pet_selecter = document.getElementById("pets-list");
+        var inner = '';
+        for (var i=0;i<pets.length;i++)
+        {
+            inner = inner + '<option class="txt_inlist" value='+ i +'>'+pets[i]+'</option>';
+        }
+
+        pet_selecter.innerHTML = inner;
+
+        //年份選單
+        var y = ['2020','2019以前','2019','2021','2022','2023','2024'];
+        var year_selector = document.getElementById("years-list");
+        var inner = '';
+        for (var i=0;i<y.length;i++)
+        {
+            inner = inner + '<option class="txt_inlist" value='+ i +'>'+y[i]+'</option>';
+        }
+        year_selector.innerHTML = inner;
+
+        var m = ['3','1','2','4','5','6','7', '8', '9', '10', '11', '12', '13'];
+        var m_selector = document.getElementById("months-list");
+        var inner = '';
+        for (var i=0;i<m.length;i++)
+        {
+            inner = inner + '<option class="txt_inlist" value='+ i +'>'+m[i]+'</option>';
+        }
+        m_selector.innerHTML = inner;
+
+       
+
+        var d = ['30', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '31'];
+        var d_selector = document.getElementById("days-list");
+        var inner = '';
+        for (var i=0;i<d.length;i++)
+        {
+            inner = inner + '<option class="txt_inlist" value='+ i +'>'+d[i]+'</option>';
+        }
+        d_selector.innerHTML = inner;
+
+
+        var pstatus = ['很醜' ,'有點肥肥的', '大胖子', '減肥中', '勇敢的拒絕填寫'];
+        var status_selecter = document.getElementById("pets-status");
+        var inner = '';
+        for (var i=0;i<pstatus.length;i++)
+        {
+            inner = inner + '<option class="txt_inlist" value='+ i +'>'+ pstatus[i] +'</option>';
+        }
+
+        status_selecter.innerHTML = inner;
+
+        var female = ['x', '懷孕6周內' ,'懷孕7周以上', '懷孕10個月', '沒懷孕,還是青春小姐姐'];
+        var female_selecter = document.getElementById("female-list");
+        var inner = '';
+        for (var i=0;i<female.length;i++)
+        {
+            inner = inner + '<option class="txt_inlist" value='+ i +'>'+ female[i] +'</option>';
+        }
+
+        female_selecter.innerHTML = inner;
+
+
+
+        function clickSubmitBtn()
+        {
+            var formElement = document.getElementById("form")
+        }
+
+
+    </script>
+
+
+
 </body>
 
 </html>
