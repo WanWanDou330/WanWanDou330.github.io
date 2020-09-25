@@ -27,6 +27,19 @@
         }
         .answer
         {
+            margin-top: 40px;
+            font-family: fantasy;
+            font-size: 32px;
+        }
+        .answer2
+        {
+            margin-top: 7px;
+            font-family: fantasy;
+            font-size: 32px;
+        }
+        .answer3
+        {
+            margin-top: 5px;
             font-family: fantasy;
             font-size: 32px;
         }
@@ -38,7 +51,7 @@
 
         .middlecontent
         {
-            margin-left: 40%;
+            margin-left: 30%;
         }
         .white
         {
@@ -86,7 +99,7 @@
         <select id="pets-status" class="txt_inlist"></select>
         <div class="white">我是空白</div>
 
-        <p class="discript">4. 有無結渣</p>
+        <p class="discript">4. 有無結紮</p>
         <div class="white">我是空白</div>
         <input type="checkbox" name="nobaby" style="width: 28px; height: 28px;" /> (有的話,左邊打勾)
         <div class="white">我是空白</div>
@@ -96,15 +109,33 @@
         <select id="female-list" class="txt_inlist"></select>
         <div class="white">我是空白</div>
 
-        <p class="discript">6. 寵物體重(可以輸入到小數點後12位)</p>
+        <p class="discript">6. 寵物體重(整數的話要打個小數點 ex. 5 ---> 5.0)</p>
         <div class="white">(千萬不能輸入到小數點後16位)</div>
         <input class="txt_inlist" type="text" name="pets_weight"/>
         <div class="white">我是空白</div>
+
+        <p class="discript">7. 飼料每公斤多少卡路里(kcal/kg)</p>
+        <input class="txt_inlist" type="text" name="pets_weight" value="4083"/>
+        <div class="white">我是空白</div>
+
+        <p class="discript">8. 一天吃幾餐呢?</p>
+        <select id="number-list" class="txt_inlist">
+            <option class="txt_inlist" value=2>2</option>
+            <option class="txt_inlist" value=1>1</option>
+            <option class="txt_inlist" value=0>0</option>
+            <option class="txt_inlist" value=3>3</option>
+            <option class="txt_inlist" value=4>4</option>
+            <option class="txt_inlist" value=5>5</option>
+        </select>
+        <div class="white">我是空白</div>
+
         <input onclick='clickSubmitBtn();' type='button' class="sendBtn" name="btn" value="計算" style="cursor: pointer;">
     </form>
 
-    <div style="margin-left: 35%">
-        <div class="answer"></div>
+    <div style="margin-left: 28%">
+        <div class="answer" id='ANSWER'></div>
+        <div class="answer2" id='ANSWER2'></div>
+        <div class="answer3" id='ANSWER3'></div>
 
         <div class="space"></div>
 
@@ -175,7 +206,12 @@
             "45":1216,
             "50":1316,
             "55":1414,
-            "60":1509
+            "60":1509,
+        }
+
+        var factor_table = {
+            "dog":{"age":[3,2,1.8,1.6],"s":[1.4,1.2],'f':[1.8,3,4]},
+            "cat":{"age":[2.5,2,1.4,1.2],"s":[1,0.8],'f':[1.6, 2]},
         }
 
 
@@ -231,7 +267,7 @@
 
         status_selecter.innerHTML = inner;
 
-        var female = ['x', '懷孕6周內' ,'懷孕7周以上', '懷孕10個月', '沒懷孕,還是青春小姐姐'];
+        var female = ['x', '懷孕6周內' ,'懷孕7周以上', '懷孕10個月', '沒懷孕,還是青春小姐姐', '生完小朋友,餵奶中'];
         var female_selecter = document.getElementById("female-list");
         var inner = '';
         for (var i=0;i<female.length;i++)
@@ -241,12 +277,365 @@
 
         female_selecter.innerHTML = inner;
 
-
+        var anser_text = document.getElementById("ANSWER");
+        var anser_text2 = document.getElementById("ANSWER2");
+        var anser_text3 = document.getElementById("ANSWER3");
 
         function clickSubmitBtn()
         {
             var formElement = document.getElementById("form")
+
+            var pets_type = formElement[0].value;
+            var birth_y = formElement[1].value;
+            var birth_m = formElement[2].value;
+            var birth_d = formElement[3].value;
+            var pets_status = formElement[4].value;
+            var isnobaby = formElement[5].checked;
+            var fstatus = formElement[6].value;
+            var pets_weights = parseFloat(formElement[7].value);
+            var food_heat = parseFloat(formElement[8].value);
+            var n_feed = parseFloat(formElement[9].value);
+
+
+            if(isNaN(pets_weights))
+            {
+                anser_text.innerHTML = "你~~~沒輸入體重,或是亂輸入體重!!";
+                anser_text2.innerHTML = "";
+                anser_text3.innerHTML = "";
+            }
+            else if(isNaN(food_heat))
+            {
+                anser_text.innerHTML = "每公斤多少卡路里呢?";
+                anser_text2.innerHTML = "";
+                anser_text3.innerHTML = "";
+            }
+            else
+            {
+
+                if(n_feed=='0')
+                {
+                    anser_text.innerHTML = "想餓死誰!?";
+                    anser_text2.innerHTML = "";
+                    anser_text3.innerHTML = "";
+                }
+
+
+                if(formElement[7].value.split('.')[1].length == 16)
+                {
+                    anser_text.innerHTML = "你好我叫鬥牛丸!我會去找你玩!";
+                    anser_text2.innerHTML = "";
+                    anser_text3.innerHTML = "";
+                }
+                else
+                {
+                    if(pets_weights>60)
+                    { 
+                        anser_text.innerHTML = "超過60公斤的圓形寵物可能要看個醫生喔!";
+                        anser_text2.innerHTML = "";
+                        anser_text3.innerHTML = "";
+                    }
+                    else
+                    {
+                        final = predict(pets_type, birth_y, birth_m, birth_d, pets_status, isnobaby, fstatus, pets_weights);
+                        
+                        if(isNaN(final))
+                        {
+                            anser_text.innerHTML = final;
+                            anser_text2.innerHTML = "";
+                            anser_text3.innerHTML = "";
+                        }
+                        else
+                        {
+                            
+                            var ans1 = (final/food_heat)*1000;
+                            ans1 = ans1.toString();
+                            var ans2 = ((final/food_heat)*1000/n_feed);
+                            ans2 = ans2.toString();
+                            var ans3 = final;
+                            ans3 = ans3.toString();
+                            ans1 = ans1.substring(0, 5);
+                            ans2 = ans2.substring(0, 5);
+                            ans3 = ans3.substring(0, 5);
+
+                            anser_text.innerHTML = "推薦一天共可攝取"+ans1+"公克的飼料,每餐可以吃"+ans2+"公克";
+                            anser_text2.innerHTML = "也就是說今天共會攝取"+ans3+"卡路里唷!";
+                            anser_text3.innerHTML = "提醒一下喔: 還有"+loadBirth(birth_y, birth_m, birth_d)+"天就到他/她生日了";
+                            if(n_feed=='0')
+                            {
+                                anser_text.innerHTML = "想餓死誰!?";
+                                anser_text2.innerHTML = "";
+                                anser_text3.innerHTML = "";
+                            }
+                        }
+                    }
+                }
+
+            }
         }
+
+
+        function loadBirth(birth_y, birth_m, birth_d)
+        {
+
+            var Today = new Date();
+    　      var now_y = Today.getFullYear();
+            var now_m = Today.getMonth()+1;
+            var now_d = Today.getDate();
+
+
+            birth_y = parseFloat(y[birth_y]);
+            birth_m = parseFloat(m[birth_m]);
+            birth_d = parseFloat(d[birth_d]);
+
+            var dbirthday = -1;
+            
+            if(birth_m>=now_m)
+            {
+                dbirthday = calBirthDay(""+now_y+"/"+now_m+"/"+now_d, ""+now_y+"/"+birth_m+"/"+birth_d);
+            }
+            else
+            {
+                dbirthday = calBirthDay(""+now_y+"/"+now_m+"/"+now_d, ""+(now_y+1)+"/"+birth_m+"/"+birth_d);
+            }
+
+            return dbirthday;
+        }
+
+        function predict(pets_type, birth_y, birth_m, birth_d, pets_status, isnobaby, fstatus, pets_weights)
+        {
+            if(pets_weights<0)
+            {
+                return "......"+pets[pets_type]+"  輕飄飄";
+            }
+
+
+            if(birth_y>2)
+            {
+                return "你的"+pets[pets_type]+"還沒出生,耐心等一下吧!";
+            }
+
+            if(birth_y == 1)
+            {
+                birth_y = 2018;
+            }
+            else
+            {
+                birth_y = parseFloat(y[birth_y]);
+            }
+            
+            birth_m = parseFloat(m[birth_m]);
+            birth_d = parseFloat(d[birth_d]);
+
+            var Today = new Date();
+    　      var now_y = Today.getFullYear();
+            var now_m = Today.getMonth()+1;
+            var now_d = Today.getDate();
+
+            var petsages = calBirthDay(""+now_y+"/"+now_m+"/"+now_d, ""+birth_y+"/"+birth_m+"/"+birth_d);
+
+            fianl = -1;
+            if(pets_type == 0)
+            {
+                var w_score = getWScores(pets_weights);
+                //alert("a00");
+                var w_factor = 0.0;
+                //alert("a001 "+ petsages + "  " + isnobaby);
+                if(petsages<=120)
+                {
+                    //alert("a1");
+                    w_factor = 3;
+                }
+                else if(petsages>120 & petsages<365)
+                {
+                    //alert("a2");
+                    w_factor = 2;
+                }
+                else if(isnobaby==true)
+                {
+                    //alert("a3");
+                    if(pets_status==0 | pets_status==4)
+                    {
+                        //alert("a4");
+                        w_factor = 1.6;
+                    }
+                    else if(pets_status==1)
+                    {
+                        //alert("a4");
+                        w_factor = 1.5;
+                    }
+                    else if (pets_status==2)
+                    {
+                        //alert("a5");
+                        w_factor = 1.4;
+                    }
+                    else if (pets_status==3)
+                    {
+                        //alert("a6");
+                        w_factor = 1.2;
+                    }
+                }
+                else if(isnobaby == false)
+                {
+                    //alert("a7");
+                    if(pets_status==0 || pets_status==4)
+                    {
+                        //alert("a8");
+                        w_factor = 1.8;
+                    }
+                    else if(pets_status==1)
+                    {
+                        //alert("a9");
+                        w_factor = 1.6;
+                    }
+                    else if (pets_status==2)
+                    {
+                        //alert("a10");
+                        w_factor = 1.4;
+                    }
+                     else if (pets_status==3)
+                    {
+                        //alert("a11");
+                        w_factor = 1.2;
+                    }
+                }
+
+
+                if(fstatus==0)
+                {
+                    //alert("a12");
+                    return w_factor*w_score;
+                }
+                else if(fstatus==1)
+                {
+                    //alert("a13");
+                    if(isnobaby==true)
+                    {
+                        return "結紮又懷孕,厲害!"
+                    }   
+                    w_factor = 1.8;
+                }
+                else if(fstatus==2)
+                {
+                    //alert("a14");
+                    if(isnobaby==true)
+                    {
+                        return "結紮又懷孕,神奇!"
+                    }   
+                    w_factor = 3.0;
+                }
+                else if(fstatus==3)
+                {
+                    return "應該很少寵物懷孕那麼久吧!?"
+                }
+                else if(fstatus==4)
+                {
+                    //alert("a15");
+                    w_score = 4.0;
+                }
+
+                //alert("a16");
+                return w_score*w_factor;
+
+            }
+            else if(pets_type == 1)
+            {
+                return "貓咪還沒辦法計算,在等一下下我就會完成他!";
+            }
+            else
+            {
+                return "抱歉尚未新增這種動物";
+            }
+
+
+            return fianl;
+        };
+
+        function getWScores(w_f)
+        {
+            
+            var mkey = '';
+            var mval = 100.0;
+            var md = 100.0;
+            var w_v = 100.0;
+            var rdw = 100.0;
+            var dw = 100.0;
+
+            for(var k in base_table) 
+            {
+                w_v = parseFloat(k);
+                rdw = w_f-w_v;
+                dw = Math.abs(rdw);
+                //alert("min val: "+mval+" dw:"+dw+"w_v:"+w_v+" dif: "+rdw);
+                if(dw<mval)
+                {
+                    mval = dw;
+                    mkey = k;
+                    md = rdw;
+                }
+            }
+
+            //alert("best key:"+mkey+" its value:"+mval+" pet weight:"+w_f+"min diff:"+md);
+
+
+            var diver = 0;
+            var kkk = 0;
+            //alert("6");
+            if (w_f<1)
+            {
+                //alert("7");
+                return base_table[mkey];
+            }
+            else if(w_f<3)
+            {
+                //alert("8");
+                diver = 2;
+                kkk = 0.5;
+            }
+            else if(w_f<=39)
+            {
+                diver = 1;
+                kkk = 1;
+                //alert("9");
+            }
+            else
+            {
+                diver = 5;
+                kkk = 5;
+                //alert("10");
+            }
+
+            if(md==0)
+            {
+                //alert("11");
+                return base_table[mkey]
+            }
+            else if(md<0)
+            { 
+                //alert("12");
+                mkey = parseInt(mkey);
+                //alert("key: "+mkey+" value: "+base_table[mkey]+" (-1*md): "+(-1*md)+" (mkey-kkk): "+(mkey-kkk)+" its value: "+base_table[''+(mkey-kkk)]);
+                //alert("result: "+(base_table[''+(mkey-kkk)]*(-1*md)/diver + base_table[''+mkey]*(1+md)/diver));
+                var i_v = base_table[''+(mkey-kkk)]*(-1*md)/diver + base_table[''+mkey]*(1+md)/diver;
+                return i_v
+            }
+            else
+            {
+                //alert("13");
+                mkey = parseInt(mkey);
+                //alert("key: "+mkey+" value: "+base_table[mkey]+" (1-md): "+(1-md)+" (mkey+kkk): "+(mkey+kkk)+" its value: "+base_table[''+(mkey+kkk)]);
+                var i_v = base_table[''+mkey]*(1-md)/diver + base_table[''+(mkey+kkk)]*md/diver;
+                return i_v
+            }
+            //alert("14");
+        };
+
+        function calBirthDay(date1, date2) 
+        {
+          var d1 = new Date(date1);
+          var d2 = new Date(date2);
+          var dd = parseInt(Math.abs(d2-d1) /1000/60/60/24);
+          return dd;
+        };
 
 
     </script>
